@@ -1,0 +1,32 @@
+---
+- name: install python
+  hosts:  ansible_clients
+  remote_user:  root
+  become: true
+
+  tasks:
+    - name: install pre-requisites
+      apt:
+        name: software-properties-common
+        state:  present
+        update_cache: yes
+
+    - name: install python
+      apt:
+        name: python3
+        state:  present
+    - name: check python
+      shell:  'python3 --version'
+      register: comband_output
+    - debug:
+              var:  comband_output.stdout_lines
+
+    - name: install pip
+      apt:
+        name: pip
+        state:  present
+
+    - name: install virtualenv
+      python3:
+          name: venv
+          state: present

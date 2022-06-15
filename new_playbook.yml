@@ -3,7 +3,9 @@
   hosts:  ansible_clients
   remote_user:  root
   become: true
-
+  environment:
+    FLASK_APP: hello.py
+    
   tasks:
     - name: install pre-requisites
       apt:
@@ -42,3 +44,18 @@
     - debug:
         var:  comband_output.stdout_lines
 
+    - name: cloning helloworld repo
+        git:
+          repo: https://github.com/Sysnove/flask-hello-world.git
+          dest: /home/ubuntu/repos/
+          clone:  yes
+          update: yes
+
+    - name: exporting flask variable
+      # shell:  'cd /home/ubuntu/repos'
+      # environment:
+      # FLASK_APP:  hello.py
+      shell:  'flask run'
+      register: comband_output
+    - debug:
+        var:  comband_output.stdout_lines

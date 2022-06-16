@@ -1,11 +1,9 @@
 ---
 - name: install python
-  hosts:  ansimbl_clients
+  hosts:  ansible_clients
   remote_user:  root
   become: true
-  environment:
-    FLASK_APP: hello.py
-
+  
   tasks:
     - name: install pre-requisites
       apt:
@@ -66,3 +64,6 @@
         requirements: /home/ubuntu/repos/requirements.txt
         virtualenv: /home/ubuntu/envs/hello
         virtualenv_python:  python3
+
+ - name: activate
+      shell:  'bash file.sh'

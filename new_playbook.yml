@@ -1,11 +1,11 @@
 ---
 - name: install python
-  hosts:  ansible_clients
+  hosts:  ansimbl_clients
   remote_user:  root
   become: true
   environment:
     FLASK_APP: hello.py
-    
+
   tasks:
     - name: install pre-requisites
       apt:
@@ -27,35 +27,42 @@
       apt:
         name: pip
         state:  present
-    
+
     - name: install git
       apt:
         name: git
         state:  present
 
-    - name: install flask
+#    - name: install flask
+ #     pip:
+  #      name: flask
+   #     state:  present
+
+    #- name: check flask
+     # shell:  'flask --version'
+      #register: comband_output
+   # - debug:
+    #    var:  comband_output.stdout_lines
+#
+    - name: cloning helloworld repo
+      git:
+        repo: https://github.com/Sysnove/flask-hello-world.git
+        dest: /home/ubuntu/repos/
+        clone:  yes
+        update: yes
+
+    - name: creating or updating requirements file
+      copy:
+        dest: /home/ubuntu/repos/requirements.txt
+        content:  flask
+		
+    - name: install venv
       pip:
-        name: flask
+        name: virtualenv
         state:  present
 
-    - name: check flask
-      shell:  'flask --version'
-      register: comband_output
-    - debug:
-        var:  comband_output.stdout_lines
-
-    - name: cloning helloworld repo
-        git:
-          repo: https://github.com/Sysnove/flask-hello-world.git
-          dest: /home/ubuntu/repos/
-          clone:  yes
-          update: yes
-
-    - name: exporting flask variable
-      # shell:  'cd /home/ubuntu/repos'
-      # environment:
-      # FLASK_APP:  hello.py
-      shell:  'flask run'
-      register: comband_output
-    - debug:
-        var:  comband_output.stdout_lines
+    - name: create venv
+      pip:
+        requirements: /home/ubuntu/repos/requirements.txt
+        virtualenv: /home/ubuntu/envs/hello
+        virtualenv_python:  python3
